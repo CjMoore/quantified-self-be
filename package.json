@@ -1,0 +1,20 @@
+{
+  "name": "quantified_self_be",
+  "version": "1.0.0",
+  "description": "This is the back end for the quantified self project",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha "
+  },
+  "author": "Charlotte Moore",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.3.0",
+    "morgan": "^1.8.1",
+    "nodemon": "^1.11.0"
+  }
+}
