@@ -1,13 +1,12 @@
 
 exports.seed = function(knex, Promise) {
-  // Deletes ALL existing entries
-  return knex('table_name').del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('table_name').insert([
-        {id: 1, colName: 'rowValue1'},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
-      ]);
-    });
+  return knex.raw(`TRUNCATE foods RESTART IDENTITY`).then(() => {
+    return Promise.all([
+      knex.raw('INSERT INTO foods (name, calories, created_at) VALUES(?,?,?)', ['Banana', 34, new Date ]),
+      knex.raw('INSERT INTO foods (name, calories, created_at) VALUES(?,?,?)', ['Orange', 34, new Date ]),
+      knex.raw('INSERT INTO foods (name, calories, created_at) VALUES(?,?,?)', ['Dark Chocolate', 150, new Date ]),
+      knex.raw('INSERT INTO foods (name, calories, created_at) VALUES(?,?,?)', ['Beef Jerkey', 95, new Date ]),
+    ])
+  })
+
 };
