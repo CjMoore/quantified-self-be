@@ -194,4 +194,21 @@ describe('Server', () => {
       });
     });
   });
+
+  describe('POST /api/v1/diaries', () => {
+    it('is able to create a diary', (done) => {
+      const day = {
+        date: new Date("9 May 2017"),
+        created_at: new Date
+      }
+
+      this.request.post('/api/v1/diaries', {form: day} ,(error, response) => {
+        const newDiary = JSON.parse(response.body)
+
+        assert.equal(newDiary.date, '2017-05-09T06:00:00.000Z')
+        done();
+      })
+    })
+  });
+
 });
