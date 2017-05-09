@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
     id SERIAL PRIMARY KEY NOT NULL,
     name TEXT,
     calories INTEGER,
+    status INTEGER DEFAULT 1,
     created_at TIMESTAMP
   )`
 
