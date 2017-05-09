@@ -5,6 +5,7 @@ const app = express()
 const FoodsController = require('./lib/controllers/foods-controller')
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(logger('dev'))
 
@@ -14,13 +15,9 @@ app.get('/api/v1/foods', FoodsController.index)
 
 app.get('/api/v1/foods/:id', FoodsController.show)
 
-app.post('/api/v1/foods', (request, response) => {
-  console.log(request.body)
-})
+app.post('/api/v1/foods', FoodsController.create)
 
-app.patch('/api/v1/foods/:id', (request, response) => {
-  console.log(request.body)
-})
+app.patch('/api/v1/foods/:id', FoodsController.update)
 
 app.delete('/api/v1/foods/:id', FoodsController.destroy)
 

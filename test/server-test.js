@@ -125,16 +125,32 @@ describe('Server', () => {
         created_at: new Date
       };
 
+      // this.request.get('/api/v1/foods', (error, response) => {
+      //   if (error) { done(error); }
+      //   let parsedFood = JSON.parse(response.body)
+      //
+      //   assert.equal(parsedFood.length, 2)
+      // })
+
       this.request.post('/api/v1/foods', { form: newFood }, (error, response) => {
-        //  if (error) { done(error); }
-        //  console.log(response.body)
+         if (error) { done(error); }
 
-        // console.log(response.body)
-        // const foodsCount  = response.body.count
-        // assert.equal(foodsCount, 3)
+        const successfullPost  = JSON.parse(response.body)
+        assert.equal(successfullPost.message, 'Food Created')
 
-        done();
-      });
+      })
+
+      // this.request.get('/api/v1/foods', (error, response) => {
+      //   if (error) { done(error); }
+      //   let parsedFood = JSON.parse(response.body)
+      //
+      //   console.log(parsedFood)
+      //
+      //   assert.equal(parsedFood.length, 3)
+      // })
+
+
+      done();
     });
   })
 
@@ -158,17 +174,35 @@ describe('Server', () => {
         created_at: new Date
       };
 
+      // this.request.get('/api/v1/foods/2', (error, response) => {
+      //   if (error) { done(error); }
+      //
+      //   const updatedFood = JSON.parse(response.body)
+      //
+      //   assert.equal(updatedFood.calories, 34)
+      //   assert.not.equal(updaedFood.calories, 150)
+      //   assert.equal(updaedFood.name, 'Orange')
+      //   done()
+      // })
+
       this.request.patch('/api/v1/foods/2', {form: changeFood}, (error, response) => {
         if (error) { done(error); }
+        console.log(response.body)
+        const updateMessage = JSON.parse(response.body)
 
-        // const updatedFood = JSON.parse(response.body)
-        //
-        // assert.not.equal(updatedFood.calories, 34)
-        // assert.equal(updaedFood.calories, 150)
-        // assert.equal(updaedFood.name, 'Orange')
-
-        done();
+        assert.equal(updateMessage.message, "Food Updated")
+        done()
       });
+      // this.request.get('/api/v1/foods/2', (error, response) => {
+      //   if (error) { done(error); }
+      //
+      //   const updatedFood = JSON.parse(response.body)
+      //
+      //   assert.not.equal(updatedFood.calories, 34)
+      //   assert.equal(updaedFood.calories, 150)
+      //   assert.equal(updaedFood.name, 'Orange')
+      // })
+      // done();
     });
   });
 
