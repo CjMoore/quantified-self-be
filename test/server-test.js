@@ -211,4 +211,42 @@ describe('Server', () => {
     })
   });
 
+  describe('POST /api/v1/meals', () => {
+    it('is able to create a meal', (done) => {
+      beforeEach((done) => {
+        database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
+          done()
+        })
+      });
+
+      afterEach((done)=>{
+        database.raw('TRUNCATE foods RESTART IDENTITY').then(()=> done())
+      });
+
+      const meal = {
+        name: "Breakfast",
+        diaryDate: '2017-05-09'
+      }
+
+      this.request.post('/api/v1/meals', {form: meal}, (error, response) => {
+        const newMeal = JSON.parse(response.body)
+
+        assert.equal(newMeal[0].name, "Breakfast")
+
+        return database.raw("SELECT * FROM diaries WHERE id=?", [newMeal[0].diary_id]).then( (data) => {
+          let diaryDate = data.rows[0].date
+          let diaryDay = diaryDate.getDate()
+          let diaryMonth = diaryDate.getMonth() + 1
+          let diaryYear = diaryDate.getFullYear()
+
+          const compareDate = `${diaryYear}-0${diaryMonth}-0${diaryDay}`
+          console.log(diaryDay)
+          assert.equal(compareDate, meal.diaryDate)
+          done()
+        })
+
+        done();
+      })
+    })
+  })
 });
