@@ -187,12 +187,13 @@ describe('Server', () => {
 
       this.request.patch('/api/v1/foods/2', {form: changeFood}, (error, response) => {
         if (error) { done(error); }
-        console.log(response.body)
+        // console.log(response.body)
         const updateMessage = JSON.parse(response.body)
 
         assert.equal(updateMessage.message, "Food Updated")
         done()
       });
+
       // this.request.get('/api/v1/foods/2', (error, response) => {
       //   if (error) { done(error); }
       //
@@ -203,6 +204,21 @@ describe('Server', () => {
       //   assert.equal(updaedFood.name, 'Orange')
       // })
       // done();
+    });
+
+    it("cannot update a record that is not in the db", (done) => {
+      const changeFood = {
+        name: 'Orange',
+        calories: 150,
+        created_at: new Date
+      };
+
+      this.request.patch('/api/v1/foods/22', (error, response) =>{
+        const updateResponse = JSON.parse(response.body)
+
+        assert.equal(updateResponse.message, "Food Not Found")
+        done()
+      })
     });
   });
 
