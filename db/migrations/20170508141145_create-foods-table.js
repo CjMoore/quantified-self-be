@@ -7,7 +7,6 @@ exports.up = function(knex, Promise) {
     status INTEGER DEFAULT 1,
     created_at TIMESTAMP
   )`
-
   return knex.raw(createQuery)
 };
 
