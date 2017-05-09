@@ -156,11 +156,9 @@ describe('Server', () => {
 
   describe('PATCH /api/v1/foods/:id', () => {
     beforeEach((done) => {
-      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then(() => {
-        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ['Orange', 34, new Date]).then(() => {
-          done()
-        })
-      });
+      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then( () => {
+        done()
+      })
     });
 
     afterEach((done)=>{
@@ -174,52 +172,19 @@ describe('Server', () => {
         created_at: new Date
       };
 
-      // this.request.get('/api/v1/foods/2', (error, response) => {
-      //   if (error) { done(error); }
-      //
-      //   const updatedFood = JSON.parse(response.body)
-      //
-      //   assert.equal(updatedFood.calories, 34)
-      //   assert.not.equal(updaedFood.calories, 150)
-      //   assert.equal(updaedFood.name, 'Orange')
-      //   done()
-      // })
-
       this.request.patch('/api/v1/foods/2', {form: changeFood}, (error, response) => {
         if (error) { done(error); }
-        // console.log(response.body)
         const updateMessage = JSON.parse(response.body)
 
         assert.equal(updateMessage.message, "Food Updated")
-        done()
+        return database.raw('SELECT * FROM foods WHERE id=?', [2]).then( (data) => {
+          assert.equal(data.rows[0].name, 'Orange')
+          assert.equal(data.rows[0].calories, 150)
+          done()
+        })
       });
-
-      // this.request.get('/api/v1/foods/2', (error, response) => {
-      //   if (error) { done(error); }
-      //
-      //   const updatedFood = JSON.parse(response.body)
-      //
-      //   assert.not.equal(updatedFood.calories, 34)
-      //   assert.equal(updaedFood.calories, 150)
-      //   assert.equal(updaedFood.name, 'Orange')
-      // })
-      // done();
     });
 
-    it("cannot update a record that is not in the db", (done) => {
-      const changeFood = {
-        name: 'Orange',
-        calories: 150,
-        created_at: new Date
-      };
-
-      this.request.patch('/api/v1/foods/22', (error, response) =>{
-        const updateResponse = JSON.parse(response.body)
-
-        assert.equal(updateResponse.message, "Food Not Found")
-        done()
-      })
-    });
   });
 
   describe('DELETE /api/v1/foods/:id', () => {
@@ -239,7 +204,11 @@ describe('Server', () => {
       this.request.delete('/api/v1/foods/1', (error, response) => {
         const message = JSON.parse(response.body).message
         assert.equal(message, "Food successfully deleted")
-        done();
+
+        return database.raw('SELECT * FROM foods').then( (data) => {
+          assert.equal(data.rows.length, 1)
+          done();
+        });
       });
     });
   });
