@@ -125,31 +125,15 @@ describe('Server', () => {
         created_at: new Date
       };
 
-      // this.request.get('/api/v1/foods', (error, response) => {
-      //   if (error) { done(error); }
-      //   let parsedFood = JSON.parse(response.body)
-      //
-      //   assert.equal(parsedFood.length, 2)
-      // })
-
       this.request.post('/api/v1/foods', { form: newFood }, (error, response) => {
          if (error) { done(error); }
 
         const successfullPost  = JSON.parse(response.body)
-        assert.equal(successfullPost.message, 'Food Created')
+
+        assert.equal(successfullPost[0].name, 'Dark Chocolate')
+        assert.equal(successfullPost[0].calories, 150)
 
       })
-
-      // this.request.get('/api/v1/foods', (error, response) => {
-      //   if (error) { done(error); }
-      //   let parsedFood = JSON.parse(response.body)
-      //
-      //   console.log(parsedFood)
-      //
-      //   assert.equal(parsedFood.length, 3)
-      // })
-
-
       done();
     });
   })
@@ -174,14 +158,12 @@ describe('Server', () => {
 
       this.request.patch('/api/v1/foods/2', {form: changeFood}, (error, response) => {
         if (error) { done(error); }
-        const updateMessage = JSON.parse(response.body)
+        const updatedFood = JSON.parse(response.body)
 
-        assert.equal(updateMessage.message, "Food Updated")
-        return database.raw('SELECT * FROM foods WHERE id=?', [2]).then( (data) => {
-          assert.equal(data.rows[0].name, 'Orange')
-          assert.equal(data.rows[0].calories, 150)
-          done()
-        })
+        assert.equal(updatedFood[0].name, 'Orange')
+        assert.equal(updatedFood[0].calories, 150)
+        done()
+
       });
     });
 
