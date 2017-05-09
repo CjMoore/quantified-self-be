@@ -2,6 +2,7 @@ const express = require('express')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const app = express()
+const FoodsController = require('./lib/controllers/foods-controller')
 
 app.use(bodyParser.json());
 
@@ -9,16 +10,19 @@ app.use(logger('dev'))
 
 app.set('port', process.env.PORT || 3000)
 
-app.locals.foods = {
-  bananas: 34,
-  darkChocolate: 150
-}
+app.get('/api/v1/foods', FoodsController.index)
 
-app.get('/api/v1/foods', (request, response) => {
-  const foods = app.locals.foods
+app.get('/api/v1/foods/:id', FoodsController.show)
 
-  response.json({foods})
+app.post('/api/v1/foods', (request, response) => {
+  console.log(request.body)
 })
+
+app.patch('/api/v1/foods/:id', (request, response) => {
+  console.log(request.body)
+})
+
+app.delete('/api/v1/foods/:id', FoodsController.destroy)
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
