@@ -3,6 +3,7 @@ const logger = require('morgan')
 const bodyParser = require('body-parser')
 const app = express()
 const FoodsController = require('./lib/controllers/foods-controller')
+const DiariesController = require('./lib/controllers/diaries-controller')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -20,6 +21,8 @@ app.post('/api/v1/foods', FoodsController.create)
 app.patch('/api/v1/foods/:id', FoodsController.update)
 
 app.delete('/api/v1/foods/:id', FoodsController.destroy)
+
+app.post('/api/v1/diaries', DiariesController.create)
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
