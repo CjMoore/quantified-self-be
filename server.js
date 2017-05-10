@@ -1,5 +1,5 @@
 const express = require('express')
-const logger = require('morgan')
+// const logger = require('morgan')
 const bodyParser = require('body-parser')
 const app = express()
 const FoodsController = require('./lib/controllers/foods-controller')
@@ -9,7 +9,7 @@ const MealsController = require('./lib/controllers/meals-controller')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(logger('dev'))
+// app.use(logger('dev'))
 
 app.set('port', process.env.PORT || 3000)
 
