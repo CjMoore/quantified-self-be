@@ -2,7 +2,7 @@
   "name": "quantified_self_be",
   "version": "1.0.0",
   "description": "This is the back end for the quantified self project",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
     "test": "NODE_ENV=test mocha test/*-test.js",
