@@ -124,7 +124,6 @@ describe('Server', () => {
       var newFood = {
         name: 'Dark Chocolate',
         calories: 150,
-        created_at: new Date
       };
 
       this.request.post('/api/v1/foods', { form: newFood }, (error, response) => {

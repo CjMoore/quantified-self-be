@@ -9,15 +9,15 @@ const MealsController = require('./lib/controllers/meals-controller')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(function (req, res, next) {
+app.all('*',function(req,res,next)
+{
+    if (!req.get('Origin')) return next();
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.set('Access-Control-Allow-Origin','*');
+    res.set('Access-Control-Allow-Methods','GET,POST,PATCH,DELETE');
+    res.set('Access-Control-Allow-Headers','X-Requested-With,Content-Type');
 
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    if ('OPTIONS' == req.method) return res.send(200);
 
     next();
 });
