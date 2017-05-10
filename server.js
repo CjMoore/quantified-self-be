@@ -25,7 +25,10 @@ app.delete('/api/v1/foods/:id', FoodsController.destroy)
 
 app.post('/api/v1/diaries', DiariesController.create)
 
+app.get('/api/v1/diaries/meals', DiariesController.getData)
+
 app.post('/api/v1/meals', MealsController.create)
+
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
