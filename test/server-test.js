@@ -7,6 +7,8 @@ const environment   = process.env.NODE_ENV || 'test'
 const configuration = require('../knexfile')[environment]
 const database      = require('knex')(configuration)
 
+const pry = require('pryjs')
+
 describe('Server', () => {
 
   before( (done) => {
@@ -196,6 +198,12 @@ describe('Server', () => {
   });
 
   describe('POST /api/v1/diaries', () => {
+    afterEach((done)=>{
+      database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {
+        done()
+      });
+    });
+
     it('is able to create a diary', (done) => {
       const day = {
         date: new Date("9 May 2017"),
@@ -211,4 +219,92 @@ describe('Server', () => {
     })
   });
 
+  describe('POST /api/v1/meals', () => {
+
+    beforeEach((done) => {
+      database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
+        done()
+      })
+    });
+
+    afterEach((done)=>{
+      database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {
+        done()
+      });
+    });
+
+    it('is able to create a meal', (done) => {
+
+      const meal = {
+        name: "Breakfast",
+        diaryDate: '2017-05-09'
+      }
+
+      this.request.post('/api/v1/meals', {form: meal}, (error, response) => {
+        const newMeal = JSON.parse(response.body)
+
+        assert.equal(newMeal[0].name, "Breakfast")
+
+        return database.raw("SELECT * FROM diaries WHERE id=?", [newMeal[0].diary_id]).then( (data) => {
+          let diaryDate = data.rows[0].date
+          let diaryDay = diaryDate.getDate()
+          let diaryMonth = diaryDate.getMonth() + 1
+          let diaryYear = diaryDate.getFullYear()
+
+          const compareDate = `${diaryYear}-0${diaryMonth}-0${diaryDay}`
+          assert.equal(compareDate, meal.diaryDate)
+          done()
+        })
+
+        done();
+      });
+    });
+  });
+
+  describe('GET /api/v1/diaries/meals', () => {
+
+    beforeEach((done) => {
+      database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
+        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then( () => {
+          database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Dark Chocolate", 150, new Date]).then( () => {
+            database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 1, 1, new Date]).then( () => {
+              database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 2, 1, new Date]).then( () => {
+                done()
+              });
+            });
+          });
+        });
+      });
+    });
+
+    afterEach((done)=>{
+      database.raw('TRUNCATE meals RESTART IDENTITY').then(()=> {
+        database.raw('TRUNCATE foods RESTART IDENTITY').then(() => {
+          database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {done()})
+        });
+      });
+    });
+
+    it('returns data about meals associated with that date and the food for those meals', (done) => {
+
+      const diaryDate = {
+        date: '2017-05-09'
+      }
+
+      this.request.get('/api/v1/diaries/meals', {form: diaryDate},(error, response) => {
+        const meals = JSON.parse(response.body)
+        const foods = meals[0].foods
+
+        assert.equal(meals.length, 1)
+        assert.equal(meals[0].name, "Lunch")
+        assert.equal(foods.length, 2)
+        assert.equal(foods[0].name, "Banana")
+        assert.equal(foods[1].name, "Dark Chocolate")
+        assert.equal(foods[0].calories, 34)
+        assert.equal(foods[1].calories, 150)
+        done()
+
+      });
+    });
+  });
 });
