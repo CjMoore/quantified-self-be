@@ -300,6 +300,7 @@ describe('Server', () => {
       this.request.get('/api/v1/diaries/meals', {form: diaryDate},(error, response) => {
         const meals = JSON.parse(response.body)
         const foods = meals[0].foods
+        console.log(meals)
 
         assert.equal(meals.length, 1)
         assert.equal(meals[0].name, "Lunch")
