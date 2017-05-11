@@ -34,11 +34,13 @@ describe('Server', () => {
   describe('GET /api/v1/foods', () => {
 
     beforeEach((done) => {
-      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then(() => {
-        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ['Orange', 34, new Date]).then(() => {
-          done()
-        })
-      });
+      database.raw('INSERT INTO foods (name, calories, created_at, status) VALUES (?,?,?,?)', ["Donut", 500, new Date, 0]).then(() =>{
+        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then(() => {
+          database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ['Orange', 34, new Date]).then(() => {
+            done()
+          })
+        });
+      })
     })
 
     afterEach((done)=>{
@@ -54,12 +56,14 @@ describe('Server', () => {
       });
     });
 
-    it('should return the correct json response', (done) => {
+    it('should return the correct json response for active foods', (done) => {
       this.request.get('/api/v1/foods', (error, response) => {
         if (error) { done(error); }
 
         let parsedFoods = JSON.parse(response.body)
 
+        assert.equal(parsedFoods[0].status, 1)
+        assert.equal(parsedFoods[1].status, 1)
         assert.equal(parsedFoods.length, 2)
         done();
       });
