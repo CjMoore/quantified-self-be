@@ -34,11 +34,13 @@ describe('Server', () => {
   describe('GET /api/v1/foods', () => {
 
     beforeEach((done) => {
-      database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then(() => {
-        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ['Orange', 34, new Date]).then(() => {
-          done()
-        })
-      });
+      database.raw('INSERT INTO foods (name, calories, created_at, status) VALUES (?,?,?,?)', ["Donut", 500, new Date, 0]).then(() =>{
+        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then(() => {
+          database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ['Orange', 34, new Date]).then(() => {
+            done()
+          })
+        });
+      })
     })
 
     afterEach((done)=>{
@@ -54,12 +56,14 @@ describe('Server', () => {
       });
     });
 
-    it('should return the correct json response', (done) => {
+    it('should return the correct json response for active foods', (done) => {
       this.request.get('/api/v1/foods', (error, response) => {
         if (error) { done(error); }
 
         let parsedFoods = JSON.parse(response.body)
 
+        assert.equal(parsedFoods[0].status, 1)
+        assert.equal(parsedFoods[1].status, 1)
         assert.equal(parsedFoods.length, 2)
         done();
       });
@@ -191,7 +195,7 @@ describe('Server', () => {
         const message = JSON.parse(response.body).message
         assert.equal(message, "Food successfully deleted")
 
-        return database.raw('SELECT * FROM foods').then( (data) => {
+        return database.raw('SELECT * FROM foods WHERE status = 1').then( (data) => {
           assert.equal(data.rows.length, 1)
           done();
         });
@@ -267,7 +271,7 @@ describe('Server', () => {
 
     beforeEach((done) => {
       database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
-        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then( () => {
+        database.raw('INSERT INTO foods (name, calories, created_at, status) VALUES (?,?,?,?)', ["Banana", 34, new Date, 0]).then( () => {
           database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Dark Chocolate", 150, new Date]).then( () => {
             database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 1, 1, new Date]).then( () => {
               database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 2, 1, new Date]).then( () => {
