@@ -203,27 +203,27 @@ describe('Server', () => {
     });
   });
 
-  describe('POST /api/v1/diaries', () => {
-    afterEach((done)=>{
-      database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {
-        done()
-      });
-    });
-
-    it('is able to create a diary', (done) => {
-      const day = {
-        date: new Date("9 May 2017"),
-        created_at: new Date
-      }
-
-      this.request.post('/api/v1/diaries', {form: day} ,(error, response) => {
-        const newDiary = JSON.parse(response.body)
-
-        assert.equal(newDiary.date, '2017-05-09T06:00:00.000Z')
-        done();
-      })
-    })
-  });
+  // describe('POST /api/v1/diaries', () => {
+  //   afterEach((done)=>{
+  //     database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {
+  //       done()
+  //     });
+  //   });
+  //
+  //   it('is able to create a diary', (done) => {
+  //     const day = {
+  //       date: new Date("9 May 2017"),
+  //       created_at: new Date
+  //     }
+  //
+  //     this.request.post('/api/v1/diaries', {form: day} ,(error, response) => {
+  //       const newDiary = JSON.parse(response.body)
+  //
+  //       assert.equal(newDiary.date, '2017-05-09T06:00:00.000Z')
+  //       done();
+  //     })
+  //   })
+  // });
 
   describe('POST /api/v1/meals', () => {
 
@@ -312,5 +312,19 @@ describe('Server', () => {
 
       });
     });
+
+    it('creates and returns a new diary if diary does not exist', (done) => {
+
+      const diaryDateMake = { date: '2017-05-20'}
+      this.request.get('/api/v1/diaries/meals', {form: diaryDateMake}, (error, response) =>{
+        const diary = JSON.parse(response.body)
+
+        const formattedReturn = new Date('2017-05-20').toISOString().slice(0, 10);
+
+        assert.equal(formattedReturn, diaryDateMake.date)
+
+        done()
+      })
+    })
   });
 });
