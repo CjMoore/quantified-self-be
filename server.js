@@ -1,6 +1,6 @@
 const express = require('express')
-// const logger = require('morgan')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const app = express()
 const FoodsController = require('./lib/controllers/foods-controller')
 const DiariesController = require('./lib/controllers/diaries-controller')
@@ -8,21 +8,7 @@ const MealsController = require('./lib/controllers/meals-controller')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
-
-app.all('*',function(req,res,next)
-{
-    if (!req.get('Origin')) return next();
-
-    res.set('Access-Control-Allow-Origin','*');
-    res.set('Access-Control-Allow-Methods','GET,POST,PATCH,DELETE');
-    res.set('Access-Control-Allow-Headers','X-Requested-With,Content-Type');
-
-    if ('OPTIONS' == req.method) return res.send(200);
-
-    next();
-});
-
-// app.use(logger('dev'))
+app.use(cors({origin: '*'}))
 
 app.set('port', process.env.PORT || 3000)
 

@@ -184,6 +184,9 @@ describe('Server', () => {
     });
 
     it('is able to delete a record', (done) => {
+      const removeFood = {
+        name: 'Banana'
+      }
       this.request.delete('/api/v1/foods/1', (error, response) => {
         const message = JSON.parse(response.body).message
         assert.equal(message, "Food successfully deleted")
