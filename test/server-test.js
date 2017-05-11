@@ -203,28 +203,6 @@ describe('Server', () => {
     });
   });
 
-  // describe('POST /api/v1/diaries', () => {
-  //   afterEach((done)=>{
-  //     database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {
-  //       done()
-  //     });
-  //   });
-  //
-  //   it('is able to create a diary', (done) => {
-  //     const day = {
-  //       date: new Date("9 May 2017"),
-  //       created_at: new Date
-  //     }
-  //
-  //     this.request.post('/api/v1/diaries', {form: day} ,(error, response) => {
-  //       const newDiary = JSON.parse(response.body)
-  //
-  //       assert.equal(newDiary.date, '2017-05-09T06:00:00.000Z')
-  //       done();
-  //     })
-  //   })
-  // });
-
   describe('POST /api/v1/meals', () => {
 
     beforeEach((done) => {
@@ -300,7 +278,6 @@ describe('Server', () => {
       this.request.get('/api/v1/diaries/meals', {form: diaryDate},(error, response) => {
         const meals = JSON.parse(response.body)
         const foods = meals[0].foods
-        console.log(meals)
 
         assert.equal(meals.length, 1)
         assert.equal(meals[0].name, "Lunch")
@@ -310,7 +287,6 @@ describe('Server', () => {
         assert.equal(foods[0].calories, 34)
         assert.equal(foods[1].calories, 150)
         done()
-
       });
     });
 
