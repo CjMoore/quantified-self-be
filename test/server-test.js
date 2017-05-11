@@ -191,7 +191,7 @@ describe('Server', () => {
         const message = JSON.parse(response.body).message
         assert.equal(message, "Food successfully deleted")
 
-        return database.raw('SELECT * FROM foods').then( (data) => {
+        return database.raw('SELECT * FROM foods WHERE status = 1').then( (data) => {
           assert.equal(data.rows.length, 1)
           done();
         });
@@ -267,7 +267,7 @@ describe('Server', () => {
 
     beforeEach((done) => {
       database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
-        database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Banana", 34, new Date]).then( () => {
+        database.raw('INSERT INTO foods (name, calories, created_at, status) VALUES (?,?,?,?)', ["Banana", 34, new Date, 0]).then( () => {
           database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Dark Chocolate", 150, new Date]).then( () => {
             database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 1, 1, new Date]).then( () => {
               database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 2, 1, new Date]).then( () => {
