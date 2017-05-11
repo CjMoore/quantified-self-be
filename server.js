@@ -8,6 +8,7 @@ const MealsController = require('./lib/controllers/meals-controller')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
+
 app.use(cors({origin: '*'}))
 
 app.set('port', process.env.PORT || 3000)
