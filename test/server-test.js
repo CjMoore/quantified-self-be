@@ -271,11 +271,12 @@ describe('Server', () => {
 
     it('returns data about meals associated with that date and the food for those meals', (done) => {
 
-      const diaryDate = {
-        date: '2017-05-09'
-      }
+      // const diaryDate = {
+      //   date: '2017-05-09'
+      // }
+      // {form: diaryDate}
 
-      this.request.get('/api/v1/diaries/meals', {form: diaryDate},(error, response) => {
+      this.request.get('/api/v1/diaries/meals?date=2017-05-09',(error, response) => {
         const meals = JSON.parse(response.body)
         const foods = meals[0].foods
 
@@ -293,7 +294,8 @@ describe('Server', () => {
     it('creates and returns a new diary if diary does not exist', (done) => {
 
       const diaryDateMake = { date: '2017-05-20'}
-      this.request.get('/api/v1/diaries/meals', {form: diaryDateMake}, (error, response) =>{
+      // {form: diaryDateMake}
+      this.request.get('/api/v1/diaries/meals?date=2017-05-20', (error, response) =>{
         const diary = JSON.parse(response.body)
 
         const formattedReturn = new Date('2017-05-20').toISOString().slice(0, 10);
