@@ -6,6 +6,10 @@ exports.seed = function(knex, Promise) {
       knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-10", new Date ]),
       knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-11", new Date ]),
       knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-12", new Date ]
+      knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-13", new Date ]
+      knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-14", new Date ]
+      knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-15", new Date ]
+      knex.raw('INSERT INTO diaries (date, created_at) VALUES(?,?)', [ "2017-05-16", new Date ]
     ])
   })
 };
