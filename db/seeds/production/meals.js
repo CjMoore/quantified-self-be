@@ -11,7 +11,7 @@ exports.seed = function(knex, Promise) {
       knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Dinner", 1, 3, new Date ]),
       knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Dinner", 3, 5, new Date ]),
       knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Dinner", 2, 5, new Date ]),
-      knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Beakfast", 1, 5, new Date ]),
+      knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Breakfast", 1, 5, new Date ]),
       knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Snacks", 4, 5, new Date ]),
       knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Snacks", 1, 4, new Date ]),
       knex.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES(?,?,?,?)', ["Lunch", 2, 6, new Date ]),
