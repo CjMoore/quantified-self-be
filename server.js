@@ -8,6 +8,7 @@ const MealsController = require('./lib/controllers/meals-controller')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
+
 app.use(cors({origin: '*'}))
 
 app.set('port', process.env.PORT || 3000)
@@ -21,8 +22,6 @@ app.post('/api/v1/foods', FoodsController.create)
 app.patch('/api/v1/foods/:id', FoodsController.update)
 
 app.delete('/api/v1/foods/:id', FoodsController.destroy)
-
-app.post('/api/v1/diaries', DiariesController.create)
 
 app.get('/api/v1/diaries/meals', DiariesController.getData)
 
