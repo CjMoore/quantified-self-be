@@ -203,6 +203,53 @@ describe('Server', () => {
     });
   });
 
+    describe('GET /api/v1/search', () => {
+      beforeEach((done) => {
+        database.raw('INSERT INTO foods (name, calories, created_at) VALUES(?,?,?)', ['DonutA', 50, new Date])
+        .then(() => {
+        database.raw('INSERT INTO foods (name, calories, created_at) VALUES(?,?,?)', ['DonutB', 500, new Date])
+        .then(() => done())})
+      })
+      afterEach((done) => {
+        database.raw('TRUNCATE foods RESTART IDENTITY')
+        .then(() => done())
+      })
+
+      it('should return foods which match the search parameter', (done) => {
+        this.request.get({
+          headers: {'content-type' : 'application/x-www-form-urlencoded'},
+          url: '/api/v1/search?searchName=d'}, (error, response) => {
+          if (error) { done(error) }
+
+          let searchResults = JSON.parse(response.body)
+          let foodA = searchResults[0]
+          let foodB = searchResults[1]
+
+          assert.equal(foodA.id, 1)
+          assert.equal(foodA.name, 'DonutA')
+          assert.equal(foodA.calories, 50 )
+          assert.equal(foodB.id, 2)
+          assert.equal(foodB.name, 'DonutB')
+          assert.equal(foodB.calories, 500 )
+
+          done()
+        })
+      })
+
+      it('should return an empty array if no results found', (done) => {
+        this.request.get({
+          headers: {'content-type' : 'application/x-www-form-urlencoded'},
+          url: '/api/v1/search?searchName=banana'}, (error, response) => {
+          if (error) { done(error) }
+
+          let searchResults = JSON.parse(response.body)
+          assert.typeOf(searchResults, 'array')
+          assert.equal(searchResults.length, 0)
+          done()
+        })
+      })
+    })
+
   describe('POST /api/v1/meals', () => {
 
     beforeEach((done) => {
