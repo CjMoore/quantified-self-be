@@ -275,7 +275,19 @@ describe('Server', () => {
           database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Dark Chocolate", 150, new Date]).then( () => {
             database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 1, 1, new Date]).then( () => {
               database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 2, 1, new Date]).then( () => {
-                done()
+                database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Dinner", 2, 1, new Date]).then( () => {
+                  database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Dinner", 1, 1, new Date]).then( () => {
+                    database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Snack", 1, 1, new Date]).then( () => {
+                      database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Snack", 2, 1, new Date]).then( () => {
+                        database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Breakfast", 2, 1, new Date]).then( () => {
+                          database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Breakfast", 1, 1, new Date]).then( () => {
+                            done()
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
               });
             });
           });
@@ -299,17 +311,24 @@ describe('Server', () => {
 
       this.request.get('/api/v1/diaries/meals', {form: diaryDate},(error, response) => {
         const meals = JSON.parse(response.body)
-        const foods = meals[0].foods
+        let breakfast = meals[0]
+        let snack     = meals[1]
+        let dinner    = meals[2]
+        let lunch     = meals[3]
 
-        assert.equal(meals.length, 1)
-        assert.equal(meals[0].name, "Lunch")
-        assert.equal(foods.length, 2)
-        assert.equal(foods[0].name, "Banana")
-        assert.equal(foods[1].name, "Dark Chocolate")
-        assert.equal(foods[0].calories, 34)
-        assert.equal(foods[1].calories, 150)
+        assert.equal(meals.length, 4)
+        assert.equal(breakfast.name, "Breakfast")
+        assert.equal(snack.name, "Snack")
+        assert.equal(dinner.name, "Dinner")
+        assert.equal(lunch.name, "Lunch")
+        meals.forEach((meal) => {
+          assert.equal(meal.foods.length, 2)
+          meal.foods.forEach((food) => {
+            assert.ok(food.name)
+            assert.ok(food.calories)
+          })
+        })
         done()
-
       });
     });
   });
