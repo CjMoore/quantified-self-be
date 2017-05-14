@@ -254,6 +254,7 @@ describe('Server', () => {
 
     beforeEach((done) => {
       database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
+        database.raw('INSERT INTO foods (name, calories, created_at), VALUES (?,?,?)', ["Banana", 34, new Date])
         done()
       })
     });
@@ -268,24 +269,16 @@ describe('Server', () => {
 
       const meal = {
         name: "Breakfast",
-        diaryDate: '2017-05-09'
+        diaryId: 1,
+        foodId: 1
       }
 
       this.request.post('/api/v1/meals', {form: meal}, (error, response) => {
         const newMeal = JSON.parse(response.body)
 
-        assert.equal(newMeal[0].name, "Breakfast")
-
-        return database.raw("SELECT * FROM diaries WHERE id=?", [newMeal[0].diary_id]).then( (data) => {
-          let diaryDate = data.rows[0].date
-          let diaryDay = diaryDate.getDate()
-          let diaryMonth = diaryDate.getMonth() + 1
-          let diaryYear = diaryDate.getFullYear()
-
-          const compareDate = `${diaryYear}-0${diaryMonth}-0${diaryDay}`
-          assert.equal(compareDate, meal.diaryDate)
-          done()
-        })
+        assert.equal(newMeal.name, "Breakfast")
+        assert.equal(newMeal.diary_id, 1)
+        assert.equal(newMeal.food_id, 1)
 
         done();
       });
