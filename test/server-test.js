@@ -203,28 +203,6 @@ describe('Server', () => {
     });
   });
 
-  describe('POST /api/v1/diaries', () => {
-    afterEach((done)=>{
-      database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {
-        done()
-      });
-    });
-
-    it('is able to create a diary', (done) => {
-      const day = {
-        date: new Date("9 May 2017"),
-        created_at: new Date
-      }
-
-      this.request.post('/api/v1/diaries', {form: day} ,(error, response) => {
-        const newDiary = JSON.parse(response.body)
-
-        assert.equal(newDiary.date, '2017-05-09T06:00:00.000Z')
-        done();
-      })
-    })
-  });
-
   describe('POST /api/v1/meals', () => {
 
     beforeEach((done) => {
@@ -305,11 +283,7 @@ describe('Server', () => {
 
     it('returns data about meals associated with that date and the food for those meals', (done) => {
 
-      const diaryDate = {
-        date: '2017-05-09'
-      }
-
-      this.request.get('/api/v1/diaries/meals', {form: diaryDate},(error, response) => {
+      this.request.get('/api/v1/diaries/meals?date=2017-05-09',(error, response) => {
         const meals = JSON.parse(response.body)
         let breakfast = meals[0]
         let snack     = meals[1]
@@ -331,5 +305,19 @@ describe('Server', () => {
         done()
       });
     });
+
+    it('creates and returns a new diary if diary does not exist', (done) => {
+
+      const diaryDateMake = { date: '2017-05-20'}
+      this.request.get('/api/v1/diaries/meals?date=2017-05-20', (error, response) =>{
+        const diary = JSON.parse(response.body)
+
+        const formattedReturn = new Date('2017-05-20').toISOString().slice(0, 10);
+
+        assert.equal(formattedReturn, diaryDateMake.date)
+
+        done()
+      })
+    })
   });
 });
