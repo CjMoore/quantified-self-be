@@ -336,7 +336,7 @@ describe('Server', () => {
         assert.equal(dinner.name, "Dinner")
         assert.equal(lunch.name, "Lunch")
         meals.forEach((meal) => {
-          assert.equal(meal.foods.length, 2)
+          assert.ok(meal.diary_id)
           meal.foods.forEach((food) => {
             assert.ok(food.name)
             assert.ok(food.calories)
