@@ -340,6 +340,8 @@ describe('Server', () => {
           meal.foods.forEach((food) => {
             assert.ok(food.name)
             assert.ok(food.calories)
+            assert.ok(food.meal_id)
+            assert.ok(food.food_id)
           })
         })
         done()
