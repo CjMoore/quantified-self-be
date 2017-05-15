@@ -27,6 +27,8 @@ app.get('/api/v1/diaries/meals', DiariesController.getData)
 
 app.post('/api/v1/meals', MealsController.create)
 
+app.delete('/api/v1/meals/:id', MealsController.destroy)
+
 app.get('/api/v1/search', FoodsController.search)
 
 

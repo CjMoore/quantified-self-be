@@ -332,16 +332,15 @@ describe('Server', () => {
 
         assert.equal(meals.length, 4)
         assert.equal(breakfast.name, "Breakfast")
-        assert.equal(snack.name, "Snack")
+        assert.equal(snack.name, "Lunch")
         assert.equal(dinner.name, "Dinner")
-        assert.equal(lunch.name, "Lunch")
+        assert.equal(lunch.name, "Snack")
         meals.forEach((meal) => {
           assert.ok(meal.diary_id)
           meal.foods.forEach((food) => {
             assert.ok(food.name)
             assert.ok(food.calories)
             assert.ok(food.meal_id)
-            assert.ok(food.food_id)
           })
         })
         done()
@@ -362,4 +361,44 @@ describe('Server', () => {
       })
     })
   });
+
+  describe('DELETE api/v1/meals/:id removes a food from a meal', () =>{
+    beforeEach((done) => {
+      database.raw('INSERT INTO diaries (date, created_at) VALUES (?,?)', [ new Date("9 May 2017"), new Date]).then( () => {
+        database.raw('INSERT INTO foods (name, calories, created_at, status) VALUES (?,?,?,?)', ["Banana", 34, new Date, 0]).then( () => {
+          database.raw('INSERT INTO foods (name, calories, created_at) VALUES (?,?,?)', ["Dark Chocolate", 150, new Date]).then( () => {
+            database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 1, 1, new Date]).then( () => {
+              database.raw('INSERT INTO meals (name, food_id, diary_id, created_at) VALUES (?,?,?,?)', ["Lunch", 2, 1, new Date]).then( () => {
+                done()
+              })
+            })
+          })
+        })
+      })
+    })
+
+    afterEach((done) => {
+      database.raw('TRUNCATE meals RESTART IDENTITY').then(()=> {
+        database.raw('TRUNCATE foods RESTART IDENTITY').then(() => {
+          database.raw('TRUNCATE diaries RESTART IDENTITY').then(()=> {done()})
+        });
+      });
+    });
+
+    it('removes a food from a meal', (done) => {
+      this.request.delete('/api/v1/meals/1', (error, response) =>{
+        let deleteMessage = JSON.parse(response.body)
+
+        assert.equal(deleteMessage, "Food Deleted from Meal")
+      })
+      this.request.get('/api/v1/diaries/meals?date=2017-05-09',(error, response) => {
+        const meals = JSON.parse(response.body)
+        let lunch = meals[0]
+        let foods = lunch.foods
+
+        assert.equal(foods.length, 1)
+        done()
+      })
+    })
+  })
 });
