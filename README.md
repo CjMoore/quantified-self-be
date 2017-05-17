@@ -16,4 +16,4 @@ Endpoints:
   
 Schema
 
-![Schema](Screen Shot 2017-05-10 at 4.55.00 PM.png)
+![Schema](quantified-self-be/Screen Shot 2017-05-10 at 4.55.00 PM.png)
