@@ -1,8 +1,22 @@
 # quantified-self-be
-
+ <p>This project is a backend API which functions with a separate front-end to track meals, foods, and calories in a food diary. The API is written in JS utilizing Node.js/Express frameworks. It uses a postgres database with a knex ORM. This is a student project done in Module 4 of the Back End Engineering program at the Turing School of Software and Design.</p>
 This API lives at `https://qs-be.herokuapp.com/api/v1`
 
-Endpoints:
+
+## Initial Setup/Installation
+
+ * To get started, clone this repository.
+ * Within project directory, run `npm install`
+ * Create databases in postgres console, 'quantified_self' and 'quantified_self_test'
+ * run `knex run migrate:latest` ##perform database migrations
+ * run `knex seed:run` ##seed database with sample data
+ * To start server locally, `npm start`
+ 
+## Running Test Suite
+
+ * Following initial setup, run `npm test` ##Runs test suite
+
+## Endpoints:
 
   * 'GET' /foods - Returns all foods in db
   * 'GET' /foods/:id - Returns a single food that corresponds to the given id
